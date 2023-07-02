@@ -30,9 +30,12 @@ def send_message():
         print("Server is down. Exiting...")
         exit(1)
 
-    msg_pack = (msg, dest, me)
+    src = me  # Set the source to `me` variable
+    
+    msg_pack = (msg, dest, src)
     marshaled_msg_pack = pickle.dumps(msg_pack)
     server_sock.send(marshaled_msg_pack)
+    
     marshaled_reply = server_sock.recv(1024)
     reply = pickle.loads(marshaled_reply)
     if reply != "ACK":
