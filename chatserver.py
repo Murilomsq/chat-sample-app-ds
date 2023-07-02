@@ -43,6 +43,7 @@ def handle_client(conn, addr):
 
         # Wait for the message from the client
         marshaled_msg_pack = conn.recv(1024)   # receive data from client
+        print("Received marshaled_msg_pack:", marshaled_msg_pack)  # Print received data
         msg_pack = pickle.loads(marshaled_msg_pack)
         msg = msg_pack[0]
         dest = msg_pack[1]
