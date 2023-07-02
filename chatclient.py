@@ -3,11 +3,7 @@ import sys
 import pickle
 import threading
 import const
-
-import sys
-import threading
-import const
-from socket import *
+import hashlib
 
 class RecvHandler(threading.Thread):
     def __init__(self, sock):
@@ -49,11 +45,40 @@ def send_handler():
     while True:
         send_message()
 
+def login(username, password):
+    try:
+        server_sock = socket(AF_INET, SOCK_STREAM)
+        server_sock.connect((const.CHAT_SERVER_HOST, const.CHAT_SERVER_PORT))
+    except:
+        print("Server is down. Exiting...")
+        exit(1)
+
+    login_data = {
+        'username': username,
+        'password': hashlib.sha256((const.SALT + password).encode()).hexdigest()
+    }
+
+    marshaled_login_data = pickle.dumps(login_data)
+    server_sock.send(marshaled_login_data)
+
+    marshaled_reply = server_sock.recv(1024)
+    reply = pickle.loads(marshaled_reply)
+    if reply != "ACK":
+        print("Error: Invalid username or password")
+        exit(1)
+
+    server_sock.close()
+
 try:
     me = str(sys.argv[1])
 except:
     print('Usage: python3 chatclient.py <Username>')
     exit(1)
+
+# Prompt for login credentials
+username = input("Enter your username: ")
+password = input("Enter your password: ")
+login(username, password)
 
 client_sock = socket(AF_INET, SOCK_STREAM)
 my_port = const.registry[me][1]
