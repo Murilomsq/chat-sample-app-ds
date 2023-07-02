@@ -4,6 +4,11 @@ import pickle
 import threading
 import const
 
+import sys
+import threading
+import const
+from socket import *
+
 class RecvHandler(threading.Thread):
     def __init__(self, sock):
         threading.Thread.__init__(self)
@@ -40,6 +45,10 @@ def send_message():
         pass
     server_sock.close()
 
+def send_handler():
+    while True:
+        send_message()
+
 try:
     me = str(sys.argv[1])
 except:
@@ -49,10 +58,10 @@ except:
 client_sock = socket(AF_INET, SOCK_STREAM)
 my_port = const.registry[me][1]
 client_sock.bind(('0.0.0.0', my_port))
-client_sock.listen(5)
+client_sock.listen(0)
 
 recv_handler = RecvHandler(client_sock)
 recv_handler.start()
 
-while True:
-    send_message()
+send_thread = threading.Thread(target=send_handler)
+send_thread.start()
