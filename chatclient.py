@@ -53,9 +53,11 @@ def login(username, password):
         print("Server is down. Exiting...")
         exit(1)
 
+    salt = "5gz"  # Salt value
+
     login_data = {
         'username': username,
-        'password': hashlib.sha256((const.SALT + password).encode()).hexdigest()
+        'password': hashlib.sha256((salt + password).encode()).hexdigest()
     }
 
     marshaled_login_data = pickle.dumps(login_data)
