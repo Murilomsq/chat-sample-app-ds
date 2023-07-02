@@ -34,6 +34,7 @@ def send_message():
     
     msg_pack = (msg, dest, src)
     marshaled_msg_pack = pickle.dumps(msg_pack)
+    print("Received marshaled_msg_pack:", marshaled_msg_pack) 
     server_sock.send(marshaled_msg_pack)
     
     marshaled_reply = server_sock.recv(1024)
