@@ -26,7 +26,7 @@ def handle_client(conn, addr):
         marshaled_login_data = conn.recv(1024)
         login_data = pickle.loads(marshaled_login_data)
         username = login_data['username']
-        password = hashlib.sha256((salt + login_data['password']).encode()).hexdigest()
+        password = login_data['password']
 
         # Validate login credentials
         authenticated = False
