@@ -42,12 +42,16 @@ def send_message():
     print("Sending marshaled_msg_pack:", marshaled_msg_pack)
     server_sock.send(marshaled_msg_pack)
 
-    marshaled_reply = server_sock.recv(1024)
-    reply = pickle.loads(marshaled_reply)
-    if reply != "ACK":
-        print("Error: Server did not accept the message (dest does not exist?)")
-    else:
-        pass
+    try:
+        marshaled_reply = server_sock.recv(1024)
+        reply = pickle.loads(marshaled_reply)
+        if reply != "ACK":
+            print("Error: Server did not accept the message (dest does not exist?)")
+        else:
+            print("Message sent successfully.")
+    except EOFError:
+        print("Error: Failed to receive response from the server.")
+
     server_sock.close()
 
 def login(username, password):
@@ -68,10 +72,14 @@ def login(username, password):
     marshaled_login_data = pickle.dumps(login_data)
     server_sock.send(marshaled_login_data)
 
-    marshaled_reply = server_sock.recv(1024)
-    reply = pickle.loads(marshaled_reply)
-    if reply != "ACK":
-        print("Error: Invalid username or password")
+    try:
+        marshaled_reply = server_sock.recv(1024)
+        reply = pickle.loads(marshaled_reply)
+        if reply != "ACK":
+            print("Error: Invalid username or password")
+            exit(1)
+    except EOFError:
+        print("Error: Failed to receive response from the server.")
         exit(1)
 
     # Prompt for message after successful login
