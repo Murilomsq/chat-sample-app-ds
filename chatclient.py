@@ -21,7 +21,7 @@ class RecvHandler(threading.Thread):
 def send_message():
     dest = input("ENTER DESTINATION: ")
     msg = input("ENTER MESSAGE: ")
-    password = input("ENTER MESSAGE: ")
+    password = input("ENTER PASSWORD: ")
     password = hashlib.sha256((password).encode()).hexdigest()
 
     try:
