@@ -43,16 +43,28 @@ def handle_client(conn, addr):
 
         
 
+         # Check if the destination exists
         try:
             dest_addr = const.registry[dest] # get address of destination in the registry
-        except:
-            conn.send(pickle.dumps("NACK")) # to do: send a proper error code
-            continue
+        except KeyError:
+            conn.send(pickle.dumps("NACK")) # send a proper error code
+            return
         else:
-            #print("Server: sending Ack to " + src)
             conn.send(pickle.dumps("ACK")) # send ACK to client
-        conn.close() # close the connection
-        #
+
+        # Validate login credentials
+        authenticated = False
+        for user in users:
+            if user.username == dest and user.password == password:
+                authenticated = True
+                break
+
+        if authenticated:
+            conn.send(pickle.dumps("ACK"))  # send ACK to client
+        else:
+            conn.send(pickle.dumps("NACK"))  # send NACK to client
+            return
+
         # Forward the message to the recipient client
         client_sock = socket(AF_INET, SOCK_STREAM) # socket to connect to clients
         dest_ip = dest_addr[0]
@@ -69,10 +81,6 @@ def handle_client(conn, addr):
         client_sock.send(marshaled_msg_pack)
         marshaled_reply = client_sock.recv(1024)
         reply = pickle.loads(marshaled_reply)
-
-        client_sock = socket(AF_INET, SOCK_STREAM) # socket to connect to clients
-        dest_ip = dest_addr[0]
-        dest_port = dest_addr[1]
         
         if reply != "ACK":
             print("Error: Destination client did not receive message properly")
@@ -83,6 +91,7 @@ def handle_client(conn, addr):
     
     finally:
         conn.close()
+
 
 def start_server():
     server_sock = socket(AF_INET, SOCK_STREAM)
