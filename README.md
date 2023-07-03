@@ -1,4 +1,10 @@
 # Chat-Sample-App
+
+## Aluno: Murilo Mesquita Carolina, Thor Franco Brenner
+
+Versão atualizada com senhas e hashing
+
+
 This is sample/starter code for some programming assignments in the Distributed Systems course taught by Prof. Fábio M. Costa at UFG in 2022.
 The app has a very simple client-server architecture. Students can identify limitations/problems/issues and make enhancements at severaç levels: architectural, non-functional aspects, functional aspects.  
 
