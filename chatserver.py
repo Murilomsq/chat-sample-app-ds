@@ -14,7 +14,7 @@ user1 = User("Alice", hashlib.sha256(("pass123").encode()).hexdigest())
 user2 = User("Bob", hashlib.sha256(("pass456").encode()).hexdigest())
 
 # Store user objects in a list
-users = [user1, user2, user3]
+users = [user1, user2]
 
 def handle_client(conn, addr):
     try:
