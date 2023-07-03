@@ -31,12 +31,12 @@ def send_message():
         exit(1)
 
     src = me  # Set the source to `me` variable
-    
+
     msg_pack = (msg, dest, src)
     marshaled_msg_pack = pickle.dumps(msg_pack)
-    print("Received marshaled_msg_pack:", marshaled_msg_pack) 
+    print("Sending marshaled_msg_pack:", marshaled_msg_pack)
     server_sock.send(marshaled_msg_pack)
-    
+
     marshaled_reply = server_sock.recv(1024)
     reply = pickle.loads(marshaled_reply)
     if reply != "ACK":
@@ -44,10 +44,6 @@ def send_message():
     else:
         pass
     server_sock.close()
-
-def send_handler():
-    while True:
-        send_message()
 
 def login(username, password):
     try:
@@ -73,30 +69,10 @@ def login(username, password):
         print("Error: Invalid username or password")
         exit(1)
 
+    # Prompt for message after successful login
+    send_message()
+
     server_sock.close()
-
-def handle_login(conn, login_data):
-    username = login_data.get('username')
-    password = login_data.get('password')
-    
-    # Check if the username and password match
-    if authenticate_user(username, password):
-        # Send acknowledgment back to the client
-        conn.send(pickle.dumps("ACK"))
-    else:
-        # Send error message back to the client
-        conn.send(pickle.dumps("Error: Invalid username or password"))
-
-def authenticate_user(username, password):
-    # This is just a dummy example
-    # Replace this with your own authentication logic
-    # Connect to your authentication system or database and perform the necessary checks
-    
-    # Example: Hardcoded username and password for demonstration purposes
-    if username == "admin" and password == "password":
-        return True
-    else:
-        return False
 
 try:
     me = str(sys.argv[1])
@@ -116,6 +92,3 @@ client_sock.listen(0)
 
 recv_handler = RecvHandler(client_sock)
 recv_handler.start()
-
-send_thread = threading.Thread(target=send_handler)
-send_thread.start()
