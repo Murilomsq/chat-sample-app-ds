@@ -52,7 +52,7 @@ except:
 client_sock = socket(AF_INET, SOCK_STREAM)
 my_port = const.registry[me][1]
 client_sock.bind(('0.0.0.0', my_port))
-client_sock.listen(5)
+client_sock.listen(0)
 
 recv_handler = RecvHandler(client_sock)
 recv_handler.start()
