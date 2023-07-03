@@ -34,7 +34,7 @@ def handle_client(conn, addr):
                 authenticated = True
                 break
 
-        if !(authenticated):
+        if not authenticated:
             conn.send(pickle.dumps("NACK"))  # send NACK to client
             print("Invalid credentials")
             return
