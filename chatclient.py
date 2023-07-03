@@ -21,6 +21,8 @@ class RecvHandler(threading.Thread):
 def send_message():
     dest = input("ENTER DESTINATION: ")
     msg = input("ENTER MESSAGE: ")
+    password = input("ENTER MESSAGE: ")
+    password = hashlib.sha256((password).encode()).hexdigest()
 
     try:
         server_sock = socket(AF_INET, SOCK_STREAM)
@@ -29,7 +31,8 @@ def send_message():
         print("Server is down. Exiting...")
         exit(1)
 
-    msg_pack = (msg, dest, me)
+    msg_pack = (msg, dest, me, password)
+    
     marshaled_msg_pack = pickle.dumps(msg_pack)
     server_sock.send(marshaled_msg_pack)
     marshaled_reply = server_sock.recv(1024)
