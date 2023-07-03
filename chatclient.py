@@ -19,41 +19,6 @@ class RecvHandler(threading.Thread):
             conn.send(pickle.dumps("ACK"))
             conn.close()
 
-def send_message():
-    dest = input("ENTER DESTINATION: ")
-    msg = input("ENTER MESSAGE: ")
-
-    try:
-        server_sock = socket(AF_INET, SOCK_STREAM)
-        server_sock.connect((const.CHAT_SERVER_HOST, const.CHAT_SERVER_PORT))
-    except:
-        print("Server is down. Exiting...")
-        exit(1)
-
-    src = me  # Set the source to `me` variable
-
-    msg_pack = {
-        'message': msg,
-        'destination': dest,
-        'source': src
-    }
-
-    marshaled_msg_pack = pickle.dumps(msg_pack)
-    print("Sending marshaled_msg_pack:", marshaled_msg_pack)
-    server_sock.send(marshaled_msg_pack)
-
-    try:
-        marshaled_reply = server_sock.recv(1024)
-        reply = pickle.loads(marshaled_reply)
-        if reply != "ACK":
-            print("Error: Server did not accept the message (dest does not exist?)")
-        else:
-            print("Message sent successfully.")
-    except EOFError:
-        print("Error: Failed to receive response from the server.")
-
-    server_sock.close()
-
 def login(username, password):
     try:
         server_sock = socket(AF_INET, SOCK_STREAM)
@@ -78,30 +43,53 @@ def login(username, password):
         if reply != "ACK":
             print("Error: Invalid username or password")
             exit(1)
+        else:
+            print("Login successful.")
+            # Prompt for message after successful login
+            send_message(server_sock)
     except EOFError:
         print("Error: Failed to receive response from the server.")
         exit(1)
 
-    # Prompt for message after successful login
-    send_message()
-
     server_sock.close()
 
-try:
-    me = str(sys.argv[1])
-except:
-    print('Usage: python3 chatclient.py <Username>')
-    exit(1)
+def send_message(server_sock):
+    dest = input("ENTER DESTINATION: ")
+    msg = input("ENTER MESSAGE: ")
 
-# Prompt for login credentials
-username = input("Enter your username: ")
-password = input("Enter your password: ")
-login(username, password)
+    src = me  # Set the source to `me` variable
 
-client_sock = socket(AF_INET, SOCK_STREAM)
-my_port = const.registry[me][1]
-client_sock.bind(('0.0.0.0', my_port))
-client_sock.listen(0)
+    msg_pack = {
+        'message': msg,
+        'destination': dest,
+        'source': src
+    }
 
-recv_handler = RecvHandler(client_sock)
-recv_handler.start()
+    marshaled_msg_pack = pickle.dumps(msg_pack)
+    print("Sending marshaled_msg_pack:", marshaled_msg_pack)
+    server_sock.send(marshaled_msg_pack)
+
+    try:
+        marshaled_reply = server_sock.recv(1024)
+        reply = pickle.loads(marshaled_reply)
+        if reply != "ACK":
+            print("Error: Server did not accept the message (dest does not exist?)")
+        else:
+            print("Message sent successfully.")
+    except EOFError:
+        print("Error: Failed to receive response from the server.")
+
+def main():
+    try:
+        me = str(sys.argv[1])
+    except:
+        print('Usage: python3 chatclient.py <Username>')
+        exit(1)
+
+    # Prompt for login credentials
+    username = input("Enter your username: ")
+    password = input("Enter your password: ")
+    login(username, password)
+
+if __name__ == '__main__':
+    main()
