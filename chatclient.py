@@ -32,7 +32,12 @@ def send_message():
 
     src = me  # Set the source to `me` variable
 
-    msg_pack = (msg, dest, src)
+    msg_pack = {
+        'message': msg,
+        'destination': dest,
+        'source': src
+    }
+
     marshaled_msg_pack = pickle.dumps(msg_pack)
     print("Sending marshaled_msg_pack:", marshaled_msg_pack)
     server_sock.send(marshaled_msg_pack)
