@@ -79,7 +79,7 @@ def handle_client(conn, addr):
 def start_server():
     server_sock = socket(AF_INET, SOCK_STREAM)
     server_sock.bind(('0.0.0.0', const.CHAT_SERVER_PORT))
-    server_sock.listen(5)
+    server_sock.listen(0)
 
     print("Chat Server is ready...")
 
