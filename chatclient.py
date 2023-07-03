@@ -3,6 +3,7 @@ import sys
 import pickle
 import threading
 import const
+import hashlib
 
 class RecvHandler(threading.Thread):
     def __init__(self, sock):
