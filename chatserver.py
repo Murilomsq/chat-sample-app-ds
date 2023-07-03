@@ -45,9 +45,9 @@ def handle_client(conn, addr):
         marshaled_msg_pack = conn.recv(1024)   # receive data from client
         print("Received marshaled_msg_pack:", marshaled_msg_pack)  # Print received data
         msg_pack = pickle.loads(marshaled_msg_pack)
-        msg = msg_pack[0]
-        dest = msg_pack[1]
-        src = msg_pack[2]
+        msg = msg_pack['message']
+        dest = msg_pack['destination']
+        src = msg_pack['source']
         print("RELAYING MSG: " + msg + " - FROM: " + src + " - TO: " + dest)
 
         # Check if the destination exists
@@ -85,7 +85,6 @@ def handle_client(conn, addr):
 
     finally:
         conn.close()
-
 def start_server():
     server_sock = socket(AF_INET, SOCK_STREAM)
     server_sock.bind(('0.0.0.0', const.CHAT_SERVER_PORT))
