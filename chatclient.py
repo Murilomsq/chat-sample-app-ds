@@ -23,7 +23,7 @@ def send_message():
     dest = input("ENTER DESTINATION: ")
     msg = input("ENTER MESSAGE: ")
     password = input("ENTER PASSWORD: ")
-    password = hashlib.sha256((password).encode()).hexdigest())
+    password = hashlib.sha256(password.encode()).hexdigest()
 
     try:
         server_sock = socket(AF_INET, SOCK_STREAM)
