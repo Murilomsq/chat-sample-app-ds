@@ -41,10 +41,7 @@ def handle_client(conn, addr):
             print("Invalid credentials")
             return
 
-        # Forward the message to the recipient client
-        client_sock = socket(AF_INET, SOCK_STREAM) # socket to connect to clients
-        dest_ip = dest_addr[0]
-        dest_port = dest_addr[1]
+        
 
         # Check if the destination exists
         try:
@@ -60,6 +57,11 @@ def handle_client(conn, addr):
         except ConnectionRefusedError:
             print("Error: Destination client is down")
             return
+
+        # Forward the message to the recipient client
+        client_sock = socket(AF_INET, SOCK_STREAM) # socket to connect to clients
+        dest_ip = dest_addr[0]
+        dest_port = dest_addr[1]
         
         msg_pack = (msg, src)
         marshaled_msg_pack = pickle.dumps(msg_pack)
