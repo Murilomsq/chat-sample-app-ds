@@ -25,6 +25,7 @@ def handle_client(conn, addr):
         src = msg_pack[2]
         password = msg_pack[3]
         print(password)
+        print(user2.password)
         
         print("RELAYING MSG: " + msg + " - FROM: " + src + " - TO: " + dest)
 
