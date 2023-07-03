@@ -3,6 +3,19 @@ import pickle
 import const
 import threading
 
+class User:
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+
+# Create user objects
+user1 = User("Alice", hashlib.sha256((salt + "pass123").encode()).hexdigest())
+user2 = User("bob", hashlib.sha256((salt + "pass456").encode()).hexdigest())
+user3 = User("charlie", hashlib.sha256((salt + "pass789").encode()).hexdigest())
+
+# Store user objects in a list
+users = [user1, user2, user3]
+
 def handle_client(conn, addr):
     try:
         marshaled_msg_pack = conn.recv(1024)   # receive data from client
@@ -10,6 +23,8 @@ def handle_client(conn, addr):
         msg = msg_pack[0]
         dest = msg_pack[1]
         src = msg_pack[2]
+        password = msg_pack[3]
+        
         print("RELAYING MSG: " + msg + " - FROM: " + src + " - TO: " + dest)
         
         # Check if the destination exists
@@ -20,6 +35,19 @@ def handle_client(conn, addr):
             return
         else:
             conn.send(pickle.dumps("ACK")) # send ACK to client
+
+        # Validate login credentials
+        authenticated = False
+        for user in users:
+            if user.username == dest and user.password == password:
+                authenticated = True
+                break
+
+        if authenticated:
+            conn.send(pickle.dumps("ACK"))  # send ACK to client
+        else:
+            conn.send(pickle.dumps("NACK"))  # send NACK to client
+            return
 
         # Forward the message to the recipient client
         client_sock = socket(AF_INET, SOCK_STREAM) # socket to connect to clients
