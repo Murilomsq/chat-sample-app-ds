@@ -19,7 +19,7 @@ class RecvHandler(threading.Thread):
             conn.send(pickle.dumps("ACK"))
             conn.close()
 
-def login(username, password):
+def login(username, password, me):
     try:
         server_sock = socket(AF_INET, SOCK_STREAM)
         server_sock.connect((const.CHAT_SERVER_HOST, const.CHAT_SERVER_PORT))
@@ -46,14 +46,14 @@ def login(username, password):
         else:
             print("Login successful.")
             # Prompt for message after successful login
-            send_message(server_sock)
+            send_message(server_sock, me)
     except EOFError:
         print("Error: Failed to receive response from the server.")
         exit(1)
 
     server_sock.close()
 
-def send_message(server_sock):
+def send_message(server_sock, me):
     dest = input("ENTER DESTINATION: ")
     msg = input("ENTER MESSAGE: ")
 
@@ -89,7 +89,7 @@ def main():
     # Prompt for login credentials
     username = input("Enter your username: ")
     password = input("Enter your password: ")
-    login(username, password)
+    login(username, password, me)
 
 if __name__ == '__main__':
     main()
