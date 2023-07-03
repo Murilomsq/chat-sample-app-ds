@@ -32,7 +32,7 @@ def handle_client(conn, addr):
         # Validate login credentials
         authenticated = False
         for user in users:
-            if user.username == dest and user.password == password:
+            if user.username == src and user.password == password:
                 authenticated = True
                 break
 
