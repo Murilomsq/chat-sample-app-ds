@@ -26,15 +26,6 @@ def handle_client(conn, addr):
         password = msg_pack[3]
         
         print("RELAYING MSG: " + msg + " - FROM: " + src + " - TO: " + dest)
-        
-        # Check if the destination exists
-        try:
-            dest_addr = const.registry[dest] # get address of destination in the registry
-        except KeyError:
-            conn.send(pickle.dumps("NACK")) # send a proper error code
-            return
-        else:
-            conn.send(pickle.dumps("ACK")) # send ACK to client
 
         # Validate login credentials
         authenticated = False
@@ -53,6 +44,15 @@ def handle_client(conn, addr):
         client_sock = socket(AF_INET, SOCK_STREAM) # socket to connect to clients
         dest_ip = dest_addr[0]
         dest_port = dest_addr[1]
+
+        # Check if the destination exists
+        try:
+            dest_addr = const.registry[dest] # get address of destination in the registry
+        except KeyError:
+            conn.send(pickle.dumps("NACK")) # send a proper error code
+            return
+        else:
+            conn.send(pickle.dumps("ACK")) # send ACK to client
         
         try:
             client_sock.connect((dest_ip, dest_port))
