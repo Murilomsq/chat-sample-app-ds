@@ -52,19 +52,6 @@ def handle_client(conn, addr):
         else:
             conn.send(pickle.dumps("ACK")) # send ACK to client
 
-        # Validate login credentials
-        authenticated = False
-        for user in users:
-            if user.username == dest and user.password == password:
-                authenticated = True
-                break
-
-        if authenticated:
-            conn.send(pickle.dumps("ACK"))  # send ACK to client
-        else:
-            conn.send(pickle.dumps("NACK"))  # send NACK to client
-            return
-
         # Forward the message to the recipient client
         client_sock = socket(AF_INET, SOCK_STREAM) # socket to connect to clients
         dest_ip = dest_addr[0]
