@@ -2,6 +2,7 @@ from socket import *
 import pickle
 import const
 import threading
+import hashlib
 
 class User:
     def __init__(self, username, password):
