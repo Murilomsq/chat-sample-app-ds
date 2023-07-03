@@ -35,7 +35,7 @@ def handle_client(conn, addr):
                 break
 
         if authenticated:
-            conn.send(pickle.dumps("ACK"))  # send ACK to client
+            
         else:
             conn.send(pickle.dumps("NACK"))  # send NACK to client
             return
