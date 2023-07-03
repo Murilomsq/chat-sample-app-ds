@@ -11,8 +11,7 @@ class User:
 
 # Create user objects
 user1 = User("Alice", hashlib.sha256(("pass123").encode()).hexdigest())
-user2 = User("bob", hashlib.sha256(("pass456").encode()).hexdigest())
-user3 = User("charlie", hashlib.sha256(("pass789").encode()).hexdigest())
+user2 = User("Bob", hashlib.sha256(("pass456").encode()).hexdigest())
 
 # Store user objects in a list
 users = [user1, user2, user3]
