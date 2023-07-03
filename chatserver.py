@@ -38,6 +38,7 @@ def handle_client(conn, addr):
             
         else:
             conn.send(pickle.dumps("NACK"))  # send NACK to client
+            print("Invalid credentials")
             return
 
         # Forward the message to the recipient client
